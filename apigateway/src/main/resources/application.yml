@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: 'true'
+   
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+#      globalcors:
+#        cors-configurations:
+#          '[/**]':
+#            allowed-origins: "*"
+#            allowed-methods: "*"
+#            allowed-headers: "*"
+#            allow-credentials: true
+      routes:
+      - id: MOCK-SERVICE
+        uri: lb://MOCK-SERVICE
+        predicates:
+        - Path=/mock-service/**
+      - id: OPENFEIGN-DEMO
+        uri: lb://OPENFEIGN-DEMO
+        predicates:
+        - Path=/openfeign-demo/**

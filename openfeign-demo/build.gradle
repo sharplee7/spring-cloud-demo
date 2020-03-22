@@ -1,0 +1,48 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+}
+
+group = 'com.lgcns.demo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	//Swagger
+	compile('io.springfox:springfox-swagger2:2.7.0')
+	compile('io.springfox:springfox-swagger-ui:2.7.0')
+
+	// Openfeign과 Eureka를 사용하는 경우 Ribbon은 import 불필요
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+	//Hystrix
+//	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.1.RELEASE'
+
+	//Eureka Client
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+}
+
+ext {
+	set('springCloudVersion', "Hoxton.SR1")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+jar {
+	enabled=true
+	manifest {
+		attributes 'Main-Class' : 'com.lgcns.demo.openfeigndemo.OpenfeignDemoApplication'
+	}
+}
+

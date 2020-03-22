@@ -1,0 +1,47 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /openfeign-demo
+
+spring:
+  application:
+    name: openfeign-demo
+
+#feign cleint에서 fallback을 하려면 feign.hystrix.enabled=true로 설정하고
+#hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds 는 기본 값인 1초 이상을 설정
+#그리고 feign.client.config.default.connectionTimeout 과 readTimeout은 hystrix의 timeout 값보다 크거나 같게 설정
+feign:
+  #feign fallback을 탈려면 hystrix enabled를 true로 설정
+  hystrix:
+    enabled: true
+  client:
+    config:
+      # 아래 config 다음에 default는 전역으로 설정하려면 default, 각 서비스 별로 지정 할려면 서비스 명 , 여기서의 예는 mock-service
+      default:
+        #  hystrix의 timeout 설정이 더 짧으면, hystirx 옵션을 따라감
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full
+
+# time-out 등은 위의 feign 속성 중 connectionTimeout이나 readTimeout으로 fallback 처리가 가능하지만 복잡한 내용은 hystrix 를 통해 가능
+# feign을 사용하면서 hystrix enable을 하고 그 후 hystrix timeoutInMilliseconds를 설정하지 않으면 기본 값인 1초가 설정되며
+# 이 1초가 feignClient의 readTimeout 속성보다 작으면 이 1초가 기본 값이 됨 <-- 주위
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+mock-service:
+  ribbon:
+    eureka:
+      enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: 'true'
